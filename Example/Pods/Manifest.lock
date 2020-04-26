@@ -1,0 +1,27 @@
+PODS:
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - TuChart (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - TuChart (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - FBSnapshotTestCase
+
+EXTERNAL SOURCES:
+  TuChart:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  TuChart: 5b7404dc57d9a0826ff1941a72603b776aab1f7d
+
+PODFILE CHECKSUM: 625cb279fab11198badb92ec71fc3445f49ca785
+
+COCOAPODS: 1.9.1

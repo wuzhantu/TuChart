@@ -7,23 +7,45 @@
 //
 
 #import "TUViewController.h"
+#import "TuLineChart.h"
+#define LXScreenW [UIScreen mainScreen].bounds.size.width
 
 @interface TUViewController ()
-
+@property (nonatomic, strong) TuLineChart *lineView;
 @end
 
 @implementation TUViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    //=数据获取
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"kData" ofType:@"plist"];
+    NSArray *kDataArr = [NSArray arrayWithContentsOfFile:path];
+    kDataArr = [kDataArr subarrayWithRange:NSMakeRange(0, 20)];
+    
+    NSMutableArray *timestamp = [NSMutableArray array];
+    NSMutableArray *closePriceArr = [NSMutableArray array];
+    NSMutableArray *volumeArr = [NSMutableArray array];
+    
+    for (NSString *str in kDataArr) {
+        NSArray *arr = [str componentsSeparatedByString:@","];
+        [timestamp addObject:arr.firstObject];
+        [closePriceArr addObject:arr[1]];
+        [volumeArr addObject:arr.lastObject];
+    }
+    self.lineView.backgroundColor = [UIColor whiteColor];
+    self.lineView.timestamp = timestamp;
+    self.lineView.closePriceArr = closePriceArr;
+    self.lineView.volumeArr = volumeArr;
+    [self.view addSubview:self.lineView];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (TuLineChart *)lineView {
+    if (!_lineView) {
+        _lineView = [[TuLineChart alloc] initWithFrame:CGRectMake(0, 200, LXScreenW, 310)];
+    }
+    return _lineView;
 }
 
 @end
