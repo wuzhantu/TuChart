@@ -220,30 +220,55 @@
     UIBezierPath *fillPath = [UIBezierPath bezierPath];
     [fillPath moveToPoint:CGPointMake(_lineGap + _lineWidth * 0.5, _trendViewHeight)];
     
-    for (NSInteger i = 0; i < self.closePriceArr.count; i++) {
-        CGFloat closePrice = [self.closePriceArr[i] floatValue];
+//    for (NSInteger i = 0; i < self.closePriceArr.count; i++) {
+//        CGFloat closePrice = [self.closePriceArr[i] floatValue];
+//
+//        CGFloat pointY = 0.0;
+//        if (perValue > 0) {
+//            pointY = highPointY + (_maxValue - closePrice) / perValue;
+//        }
+//
+//        [pointYArr addObject:@(pointY)];
+//        CGFloat pointX = _lineGap + _lineWidth * 0.5 + _perWidth * i;
+//        CGPoint point = CGPointMake(pointX, pointY);
+//        if (i == 0) {
+//            [strokePath moveToPoint:point];
+//        } else {
+//            [strokePath addLineToPoint:point];
+//        }
+//        [fillPath addLineToPoint:point];
+//    }
+    
+    for (NSInteger i = 0; i < self.closePriceArr.count - 1; i++) {
+        CGFloat startClosePrice = [self.closePriceArr[i] floatValue];
+        CGFloat endClosePrice = [self.closePriceArr[i + 1] floatValue];
         
-        CGFloat pointY = 0.0;
+        CGFloat startPointX = _lineGap + _lineWidth * 0.5 + _perWidth * i;
+        CGFloat endPointX   = _lineGap + _lineWidth * 0.5 + _perWidth * (i + 1);
+        CGFloat startPointY = 0.0;
+        CGFloat endPointY = 0.0;
         if (perValue > 0) {
-            pointY = highPointY + (_maxValue - closePrice) / perValue;
+            startPointY = highPointY + (_maxValue - startClosePrice) / perValue;
+            endPointY = highPointY + (_maxValue - endClosePrice) / perValue;
         }
         
-        [pointYArr addObject:@(pointY)];
-        CGFloat pointX = _lineGap + _lineWidth * 0.5 + _perWidth * i;
-        CGPoint point = CGPointMake(pointX, pointY);
+        CGPoint startPoint = CGPointMake(startPointX, startPointY);
+        CGPoint endPoint = CGPointMake(endPointX, endPointY);
+        
         if (i == 0) {
-            [strokePath moveToPoint:point];
-        } else {
-            [strokePath addLineToPoint:point];
+            [strokePath moveToPoint:startPoint];
+            [fillPath moveToPoint:startPoint];
         }
-        [fillPath addLineToPoint:point];
+
+        [strokePath addLineToPoint:endPoint];
+        [fillPath addLineToPoint:endPoint];
     }
     
     [fillPath addLineToPoint:CGPointMake(self.frame.size.width - _rightTimeWidth - _lineGap - _lineWidth * 0.5, _trendViewHeight)];
     [fillPath closePath];
     
     self.strokeLayer.path = strokePath.CGPath;
-    self.fillLayer.path = fillPath.CGPath;
+//    self.fillLayer.path = fillPath.CGPath;
 }
 
 - (void)drawVolumeView {
@@ -527,9 +552,10 @@
     CGFloat volumeLowPointY = _trendViewHeight + _volumeViewHeight - _volumeBottomMargin;
     CGFloat volumePerValue = (maxVolume - 0) / (volumeLowPointY - volumeHighPointY);
     
+    CGFloat scale = self.mainView.frame.size.width / (self.frame.size.width - _rightTimeWidth);
     UIBezierPath *strokePath = [UIBezierPath bezierPath];
     UIBezierPath *fillPath = [UIBezierPath bezierPath];
-    [fillPath moveToPoint:CGPointMake(_lineGap + _lineWidth * 0.5 + _perWidth * sIndex, _trendViewHeight)];
+    [fillPath moveToPoint:CGPointMake((_lineGap + _lineWidth * 0.5 + _perWidth * sIndex) *scale, _trendViewHeight * scale)];
     
     for (NSInteger i = sIndex; i <= eIndex; i++) {
         CGFloat closePrice = [self.closePriceArr[i] floatValue];
@@ -538,7 +564,7 @@
             trendPointY = trendHighPointY + (max - closePrice) / trendPerValue;
         }
         CGFloat trendPointX = _lineGap + _lineWidth * 0.5 + _perWidth * i;
-        CGPoint trendPoint = CGPointMake(trendPointX, trendPointY);
+        CGPoint trendPoint = CGPointMake((trendPointX -(_lineGap + _lineWidth * 0.5 + _perWidth * sIndex))*scale  , trendPointY);
         if (i == sIndex) {
             [strokePath moveToPoint:trendPoint];
         } else {
@@ -564,12 +590,10 @@
     [fillPath addLineToPoint:CGPointMake(self.frame.size.width - _rightTimeWidth - _lineGap - _lineWidth * 0.5, _trendViewHeight)];
     [fillPath closePath];
 
-    CGFloat scale = self.mainView.frame.size.width / (self.frame.size.width - _rightTimeWidth);
-    self.strokeLayer.lineWidth = 1 / scale;
+    self.strokeLayer.lineWidth = 1;
     self.strokeLayer.path = strokePath.CGPath;
-    self.fillLayer.path = fillPath.CGPath;
+//    self.fillLayer.path = fillPath.CGPath;
 }
-
 #pragma mark - getter
 - (NSMutableArray *)volumeViewCacheArr {
     if (!_volumeViewCacheArr) {
@@ -592,8 +616,8 @@
         _strokeLayer.strokeColor = LXHexColor(0x4798EE).CGColor;
         _strokeLayer.fillColor = [UIColor clearColor].CGColor;
         _strokeLayer.lineWidth = 1;
-        [self.mainView.layer addSublayer:_strokeLayer];
-        [self.mainView.layer addSublayer:self.gradientLayer];
+        [self.layer addSublayer:_strokeLayer];
+        [self.layer addSublayer:self.gradientLayer];
     }
     return _strokeLayer;
 }
