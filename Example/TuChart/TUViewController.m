@@ -19,7 +19,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //=数据获取
     NSString *path = [[NSBundle mainBundle] pathForResource:@"kData" ofType:@"plist"];
     NSArray *kDataArr = [NSArray arrayWithContentsOfFile:path];
     kDataArr = [kDataArr subarrayWithRange:NSMakeRange(0, 20)];
