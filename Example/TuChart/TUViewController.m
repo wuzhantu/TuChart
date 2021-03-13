@@ -19,6 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //modify
     NSString *path = [[NSBundle mainBundle] pathForResource:@"kData" ofType:@"plist"];
     NSArray *kDataArr = [NSArray arrayWithContentsOfFile:path];
     kDataArr = [kDataArr subarrayWithRange:NSMakeRange(0, 20)];
