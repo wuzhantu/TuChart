@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TuChart'
-  s.version          = '0.1.2'
+  s.version          = '0.1.5'
   s.summary          = '这是一个绘制折线图或者趋势图的组件.'
 
 # This description is used to generate tags and improve search results.
